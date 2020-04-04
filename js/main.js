@@ -78,7 +78,7 @@ function checkFormDataValid(data) {
 	if (data.taskName.length < 3) {
 		errors.taskName = 'Это поле обязательно для ввода';
 	}
-	if (data.taskDate.length < 8) {
+	if (data.taskDate.length < 8) { // dayjs().isValid()
 		errors.taskDate = 'Это поле обязательно для ввода';
 	}
 	if (STATE.formState === FORM_EDIT && !taskState.includes(data.taskState)) {
@@ -133,11 +133,14 @@ function handleCancelBtnClick(e) {
 }
 
 
+//////////////////////////////////////////////// ON LOAD INITIAL THINGS
 function handleContentLoad(e) {
 
 	resetFormControls();
 	loadDataFromStorage();
 	renderTaskList();
+
+	document.getElementById('taskDate').value = dayjs().format('DD-MM-YYYY HH:mm');
 
 	document
 		.getElementById('createTaskBtn')
