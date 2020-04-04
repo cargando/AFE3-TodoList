@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Hoisting</title>
+</head>
+<body>
+	<h1>JavaScript Hoisting</h1>
+
+	<script>
+
+		printInfo("на первой строке");
+
+		var a;
+
+		console.log("4: Переменная а = ", a);
+		console.log("5: Переменная b = ", b);
+		console.log("5: Переменная o = ", o);
+		// console.log("5: Переменная o = ", k);
+
+
+		function printInfo(val) {
+			console.log("printInfo:: ", val);
+		}
+
+		var b = 10;
+
+		console.log("7: Переменная b = ", b);
+		a = b + 10;
+
+		printInfo("на последней строке = " + (a + b));
+
+
+		function fn() {
+			// 'use strict'
+			var c = d = 500;
+		}
+
+
+		// window.a;
+		// window.b = 10;
+		//
+		// window.a = window.b + 10;;
+
+		fn();
+
+		var res = (d + 1000) / 2;
+
+		console.log("Переменная D = ", res);
+
+		// console.log("Переменная D = ", window.d);
+
+		var o = 100;
+		let h = 100;
+		const k = 100;
+
+		if (o == 100) {
+			const bb = 200;
+			console.log("B = ", bb);
+		}
+		// console.log("B outside IF = ", bb);
+
+		// let i = 0;
+		// for (let i = 0; i < 10; i++) {
+		//
+		// 	// ((j) => {
+		// 	// 	setTimeout(() => console.log("Значение i = ", j), 0)
+		// 	// })(i);
+		//
+		// 	setTimeout(() => {
+		// 		console.log("Значение i = ", i)
+		// 	}, 0);
+		// }
+		// console.log("Значение финал i = ", i);
+
+		console.log("Операция №1");
+		setTimeout(() => console.log("Операция №2 (setTimeout #1)"), 10);
+		Promise.resolve().then(() => console.log("Операция №3 (Promise #1)")); // промис "одновременно" тоже попал в очередь для Micro Tasks
+		setTimeout(() => console.log("Операция №4 (setTimeout #2)")); // попадет в обычную очередь для Tasks
+		Promise.resolve().then(() => console.log("Операция №5 (Promise #2)")); // промис "одновременно" тоже попал в очередь для Micro Tasks
+		console.log("Операция №6");
+
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>JS ADVANCED</title>
+	<script
+			src="https://code.jquery.com/jquery-3.4.1.min.js"
+			integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+			crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+	<script src="/js/main.js"></script>
+
+</head>
+<body>
+
+	<div class="container">
+		<div class="row">
+			<div class="col">
+				<h1>TODO List</h1>
+			</div> <!--  end of col -->
+		</div> <!-- end of row -->
+		<!-- -->
+		<div class="row">
+			<div class="col">
+				<div class="card">
+					<div class="card-body">
+						<h3 id="formHeader">Создать задачу</h3>
+						<form>
+							<div class="form-group">
+								<label for="taskName">Название задачи</label>
+								<input type="text" class="form-control" id="taskName" placeholder="Введите название">
+								<small class="form-text text-muted">We'll never share your email with anyone else.</small>
+							</div>
+
+							<div class="form-group">
+								<label for="taskDate">Когда напомнить</label>
+								<input type="text" class="form-control" id="taskDate" placeholder="Введите дату">
+								<small class="form-text text-muted">&nbsp;</small>
+							</div>
+
+							<div class="form-group">
+								<label for="taskDeskription">Описание задачи</label>
+								<textarea class="form-control" id="taskDeskription" rows="3"></textarea>
+							</div>
+
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" value="" id="taskUrgent">
+								<label class="form-check-label" for="taskUrgent">задача срочная</label>
+							</div>
+							<br />
+							<div class="form-group">
+								<label for="taskState">Статус задачи</label>
+								<select id="taskState" class="form-control">
+									<option selected>Выберите...</option>
+									<option value="0">Ожидает</option>
+									<option value="1">В процессе</option>
+									<option value="2">Сделано</option>
+								</select>
+								<small class="form-text text-muted">We'll never share your email with anyone else.</small>
+							</div>
+
+							<button id="createTaskBtn" type="button" class="btn btn-outline-primary">Создать</button>
+							<button type="button" class="btn btn-outline-secondary" style="margin-left: 30px;">Отмена</button>
+						</form>
+					</div> <!-- end of card-body -->
+				</div> <!-- end of card -->
+			</div> <!-- end of col -->
+
+
+
+			<div class="col">
+				<div class="card">
+					<div class="card-body">
+						<h3>Список задач</h3>
+
+					</div> <!-- end of card-body -->
+				</div> <!-- end of card -->
+			</div> <!-- end of col -->
+		</div> <!-- end of row -->
+	</div> <!-- end of container -->
+
+</body>
+</html>

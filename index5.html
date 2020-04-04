@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Blocks</title>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+	<h1>JavaScript: Advanced</h1>
+
+
+	<script>
+
+		const user1 = {
+			name: "Петрович",
+			age: 35,
+		};
+
+		const user2 = {
+			name: "Иваныч",
+
+			printInfo() {
+				console.log("Юзер", this.name, this.age);
+			}
+		};
+
+		user2.__proto__ = user1;
+
+
+
+		console.log(user2);
+
+		user2.printInfo();
+
+		function Person(name, age) {
+			this.name = name;
+		}
+		console.log("Person", typeof Person, Person.prototype);
+
+		const user3 = new Person('Матвеич');
+		const user4 = new Person('Петро');
+		const user5 = new Person('Татьяныч');
+
+
+
+		console.log("Person as object", user3);
+
+		String();
+		Boolean();
+		Number();
+		Object();
+
+		Person.userName = "Иван Петрович";
+		Person.name = "otherName";
+		// Person.prototype = "ddd";
+		// String.prototype
+		// Boolean.prototype
+		// Number.prototype
+		//
+		// Object.prototype
+
+		console.log("(Person.prototype.__proto__ === Object.prototype) = ", Person.prototype.__proto__ === Object.prototype);
+
+		console.log("Кто сделал user4 = ", Object.getPrototypeOf(user4));
+		console.log("Является ли user1 родителем для user2 = ", user1.isPrototypeOf(user2));
+
+	</script>
+</body>
+</html>
