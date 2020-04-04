@@ -12,18 +12,34 @@ const STATE = {
 	errors: {},
 	formState: FORM_CREATE,
 	formData: {},
+	operateIndex: null, // индекс задачи в массиве taskList, над которым производится действие в данный момент времени
 };
+
 
 document.addEventListener('DOMContentLoaded', handleContentLoad);
 
 function createOneTask(data) {
 	const { taskList } = STATE;
-	taskList.push(formData); // добавили данные в стейт (список задач)
+	taskList.push(data); // добавили данные в стейт (список задач)
+	updateLocalStorage(taskList);
+}
+
+function updateOneTask(data) {
+	const { taskList, operateIndex } = STATE;
+	taskList[operateIndex] = data;
 	updateLocalStorage(taskList);
 }
 
 function updateLocalStorage(data) {
 	localStorage.setItem('taskList', JSON.stringify(data));
+}
+
+function loadDataFromStorage() {
+	const taskList = JSON.parse(localStorage.getItem('taskList'));
+	STATE.taskList = taskList;
+	// STATE = { ...STATE, taskList }; - так работало бы, если бы STATE был объявлен через let
+
+	console.log(" taskList on Load ", STATE);
 }
 
 function getDataFromForm() {
@@ -36,6 +52,17 @@ function getDataFromForm() {
 		taskState: document.getElementById('taskState').value,
 	};
 	return formData;
+}
+
+function setDataToForm() {
+	const { taskList, operateIndex } = STATE;
+	document.getElementById('taskName').value = taskList[operateIndex].taskName;
+	document.getElementById('taskDate').value = taskList[operateIndex].taskDate;
+	document.getElementById('taskDeskription').value = taskList[operateIndex].taskDeskription;
+	document.getElementById('taskUrgent').checked  = taskList[operateIndex].taskUrgent;
+	document.getElementById('taskState').value = taskList[operateIndex].taskState;
+	resetFormControls();
+
 }
 
 function checkFormDataValid(data) {
@@ -77,10 +104,6 @@ function resetFormControls() {
 	}
 }
 
-function loadDataFromStarage() {
-
-	return null;
-}
 
 function handleCreateBtnClick(e) {
 	const formData = getDataFromForm();
@@ -91,19 +114,80 @@ function handleCreateBtnClick(e) {
 		return null;
 	}
 
+	if (STATE.formState === FORM_CREATE) {
+		createOneTask(formData);
+	} else {
+		updateOneTask(formData);
+	}
 
+	e.target.closest('form').reset();
+	renderTaskList();
+
+	return true;
 }
+
+function handleCancelBtnClick(e) {
+	STATE.formState = FORM_CREATE;
+	resetFormControls();
+	e.target.closest('form').reset();
+}
+
 
 function handleContentLoad(e) {
 
 	resetFormControls();
-	loadDataFromStarage();
+	loadDataFromStorage();
+	renderTaskList();
 
 	document
 		.getElementById('createTaskBtn')
 		.addEventListener('click', handleCreateBtnClick);
 
+	document
+		.getElementById('cancelTaskBtn')
+		.addEventListener('click', handleCancelBtnClick);
 
+	document.getElementById('modalBoxCloseBtn').addEventListener('click', handleCloseModal);
+	document.getElementById('modalBoxCloseBtnX').addEventListener('click', handleCloseModal);
+	document.getElementById('modalBoxSaveBtn').addEventListener('click', handleModalActionClick);
+
+}
+
+function handleCloseModal() {
+	document.getElementById('modalBox').style.display = 'none';
+}
+function handleOpenModal() {
+	document.getElementById('modalBox').style.display = 'block';
+}
+
+function handleModalActionClick() {
+	const { taskList, operateIndex } = STATE;
+
+	taskList.splice(operateIndex, 1);
+	updateLocalStorage(taskList);
+	renderTaskList();
+	handleCloseModal();
+}
+
+
+
+//////// обработчики события ЭЛЕМЕНТА - ЗАДАЧИ - РЕДАКТИРОВАТЬ одну задачу
+function handleEditItemClick(e) {
+	STATE.operateIndex = e.target.getAttribute('data-id');
+	STATE.formState = FORM_EDIT;
+	setDataToForm();
+	return null;
+}
+//////// удалить задачу
+function handleDeleteItemClick(e) {
+	STATE.operateIndex = e.target.getAttribute('data-id');
+
+	document.getElementById('modalBoxText').innerHTML = STATE.taskList[STATE.operateIndex].taskName +
+		'<br><small>' + STATE.taskList[STATE.operateIndex].taskDate + '</small>';
+
+	handleOpenModal();
+
+	return null;
 }
 
 //////// RENDER FUNCTIONS
@@ -131,4 +215,80 @@ function renderHelpers() {
 	paintHelper(taskDate, STATE.errors.taskDate);
 	paintHelper(taskState, STATE.errors.taskState);
 
+}
+
+function renderOneTaskFromList(item, index) {
+	const htmlCard = document.createElement('div');
+	const htmlCardBody = document.createElement('div');
+	const htmlCardHeader = document.createElement('h5');
+	const htmlCardText = document.createElement('p');
+	const editBtn = document.createElement('i');
+	const delBtn = document.createElement('i');
+	const exclamation = document.createElement('i');
+
+	htmlCard.classList.add('card'); // класс можно установить 2мя способами
+	htmlCardBody.setAttribute('class', 'card-body'); // либо так
+	htmlCardHeader.classList.add('card-title');
+	htmlCardText.classList.add('card-text');
+	editBtn.classList.add('fas', 'fa-edit');
+	delBtn.classList.add('fas', 'fa-ban', 'text-danger');
+	exclamation.classList.add('fas', 'fa-exclamation', 'text-danger');
+	editBtn.style.position = 'absolute';
+	delBtn.style.position = 'absolute';
+	exclamation.style.position = 'absolute';
+
+	exclamation.style.top = '25px';
+	exclamation.style.left = '7px';
+	editBtn.style.top = '15px';
+	delBtn.style.top = '15px';
+	editBtn.style.right = '40px';
+	delBtn.style.right = '15px';
+	editBtn.style.cursor = 'pointer';
+	delBtn.style.cursor = 'pointer';
+
+	editBtn.addEventListener('click', handleEditItemClick);
+	delBtn.addEventListener('click', handleDeleteItemClick);
+
+
+	editBtn.setAttribute('data-id', index);
+	delBtn.setAttribute('data-id', index);
+
+	htmlCardHeader.innerText = item.taskName;
+	htmlCardText.innerHTML = '<small>' + item.taskDate + '</small>';
+
+	htmlCard.appendChild(htmlCardBody);
+	htmlCardBody.appendChild(htmlCardHeader);
+	htmlCardBody.appendChild(htmlCardText);
+	htmlCard.appendChild(editBtn);
+	htmlCard.appendChild(delBtn);
+	if(item.taskUrgent) {
+		htmlCard.appendChild(exclamation);
+	}
+
+	htmlCard.style.marginTop = '10px';
+	htmlCard.style.position = 'relative';
+
+
+
+	// htmlCard.classList.add('card');
+	// htmlCard.innerHTML = '<div class="card-body">' +
+	// 	'<h5 class="card-title">'+ item.taskName +'</h5>' +
+	// 	'<p class="card-text"><small>'+ item.taskDate +'</small></p>' +
+	// 	'</div>';
+
+
+
+	return htmlCard;
+}
+
+function renderTaskList() {
+
+	const tasksList = document.getElementById('tasksList');
+	const header = tasksList.getElementsByTagName('h3')[0];
+	tasksList.innerHTML = '';
+	tasksList.appendChild(header);
+
+	STATE.taskList.forEach((item, index) => {
+		tasksList.appendChild(renderOneTaskFromList(item, index));
+	});
 }

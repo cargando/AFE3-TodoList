@@ -61,7 +61,7 @@
 							</div>
 
 							<button id="createTaskBtn" type="button" class="btn btn-outline-primary">Создать</button>
-							<button type="button" class="btn btn-outline-secondary" style="margin-left: 30px;">Отмена</button>
+							<button id="cancelTaskBtn" type="button" class="btn btn-outline-secondary" style="margin-left: 30px;">Отмена</button>
 						</form>
 					</div> <!-- end of card-body -->
 				</div> <!-- end of card -->
@@ -71,7 +71,7 @@
 
 			<div class="col">
 				<div class="card">
-					<div class="card-body">
+					<div id="tasksList" class="card-body">
 						<h3>Список задач</h3>
 
 					</div> <!-- end of card-body -->
@@ -79,6 +79,29 @@
 			</div> <!-- end of col -->
 		</div> <!-- end of row -->
 	</div> <!-- end of container -->
+
+
+
+	<div id="modalBox" style="background-color: #000000; opacity: 0.7;" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" style="display: block;" aria-modal="true">
+		<div class="modal-dialog" role="document" style="opacity: 1; background-color: white">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLiveLabel">Удалить элемент</h5>
+					<button id="modalBoxCloseBtnX" type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p>Вы действительно хотите удалить следующую задачу?</p>
+					<p id="modalBoxText"></p>
+				</div>
+				<div class="modal-footer">
+					<button id="modalBoxCloseBtn" type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+					<button id="modalBoxSaveBtn" type="button" class="btn btn-primary">Подтвердить</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </body>
 </html>
