@@ -104,6 +104,18 @@ function resetFormControls() {
 	}
 }
 
+function fixBootstrapModal() {
+// background-color: rgb(0,0,0);
+	//style="background-color: #000000; opacity: 0.7;"
+	const modal = document.getElementById('modalBox');
+	modal.style.backgroundColor = 'rgb(0,0,0)';
+	modal.style.backgroundColor = 'rgba(0,0,0,0.6)';
+	modal.style.display = 'none';
+	modal.style.zIndex = '1000';
+	const content = modal.querySelector('.modal-dialog');
+	console.log(content);
+}
+
 
 function handleCreateBtnClick(e) {
 	const formData = getDataFromForm();
@@ -139,6 +151,7 @@ function handleContentLoad(e) {
 	resetFormControls();
 	loadDataFromStorage();
 	renderTaskList();
+	fixBootstrapModal();
 
 	document.getElementById('taskDate').value = dayjs().format('DD-MM-YYYY HH:mm');
 
@@ -155,6 +168,7 @@ function handleContentLoad(e) {
 	document.getElementById('modalBoxSaveBtn').addEventListener('click', handleModalActionClick);
 
 }
+
 
 function handleCloseModal() {
 	document.getElementById('modalBox').style.display = 'none';
@@ -174,7 +188,7 @@ function handleModalActionClick() {
 
 
 
-//////// обработчики события ЭЛЕМЕНТА - ЗАДАЧИ - РЕДАКТИРОВАТЬ одну задачу
+////////////////////// обработчики события ЭЛЕМЕНТА - ЗАДАЧИ - РЕДАКТИРОВАТЬ одну задачу
 function handleEditItemClick(e) {
 	STATE.operateIndex = e.target.getAttribute('data-id');
 	STATE.formState = FORM_EDIT;
@@ -193,7 +207,10 @@ function handleDeleteItemClick(e) {
 	return null;
 }
 
-//////// RENDER FUNCTIONS
+
+
+
+////////////////////////////////////// RENDER FUNCTIONS
 function renderHelpers() {
 	const taskName = document.getElementById('taskName'); // .parentElement.getElementsByTagName('small')[0];
 	const taskDate = document.getElementById('taskDate'); // .parentElement.getElementsByTagName('small')[0];
