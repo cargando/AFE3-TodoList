@@ -80,6 +80,393 @@
 		Promise.resolve().then(() => console.log("Операция №5 (Promise #2)")); // промис "одновременно" тоже попал в очередь для Micro Tasks
 		console.log("Операция №6");
 
+
+		///////////// Нововведения ES2015
+	var b = 10;
+
+	// const и let
+	const bb = 10;
+	let cc = 10;
+	if (true) {
+		const sss = 100;
+
+	}
+
+	// стрелочные функции
+
+	const summ = (a, b) => {
+		// this -> window
+		// отсутствует псевдо массив arguments
+		return a + b;
+	};
+
+	const multiply2 = b => {
+		return b * 2
+	}
+
+	const multiply3 = c => c * 3;
+
+	const summ3 = a => b => c => a + b + c;
+
+	// эквивалент
+		function sum3_v2(a) {
+			return function (b) {
+				return function (c) {
+					return a + b + c;
+				}
+			}
+		}
+
+		class Person {
+			static planet = "Earth";
+
+			static printConstructorData() {
+				console.log("Конструктор ожидает на вход 2 параметра: name (string) и age (number)", Person.planet);
+			}
+
+			constructor(name, age) {
+				this.name = name;
+				this.age = age;
+				this._car = "";
+			}
+
+			set car(val) {
+				const [brand, model] = val.split(" ");
+				this._car = {
+					brand,
+					model,
+				}
+			}
+
+			get car() {
+				console.log("innnn");
+				return "У юзера есть тачка: произоводитель " + this._car.brand + ", модель " + this._car.model;
+			}
+
+			printUserInfo() {
+				console.log("Person:", this.name, this.age);
+
+			}
+
+		}
+
+		class PersonExtendec {
+			constructor(name, age, address, phone) {
+				this.name = name;
+				this.age = age;
+				this.address = address;
+				this.phone = phone;
+			}
+
+			printUserInfo() {
+				console.log("PersonExtendec:", this.name, this.age,  this.address,  this.phone);
+				Person.printConstructorData();
+			}
+		}
+
+		const user1 = new Person("Иваныч", 100500);
+		const user2 = new PersonExtendec("Петрович", 500, "г.Москва, ул.Новослободская", "555-12-12");
+		// user1.__proto__ = user2;
+
+		// Person.printContructorData();
+
+		user1.car = "Вольво ХС90";
+
+		user1.printUserInfo();
+		console.log(user1, Person.planet)
+
+		console.log(user1.car);
+
+		const fn5 = (val = "тест тест") => {
+
+			return "Some val = " + val;
+		}
+
+		console.log("fn5 = ", fn5() );
+
+		const user5 = "Семеныч";
+		const userAddress = 'г.Москва, ул Новослободская ' +
+			'35';
+
+
+		const userResult = `Супер юзер: ${ user5 }, живет по адресу: ${ userAddress }`;
+ 	/// аналог userResult = "Супер юзер:" + user5 + ", живет по адресу: " + userAddress;
+		// под капотом это выглядит вот так:
+		// function userResult(params, vals) {
+		// 		return  params[0] // -> там хранится строка "Супер юзер: "
+		// 		  + vals[0] // -> там будет user5
+		// 		  + params[1] // -> там будет ", живет по адресу: "
+		// 		  + vals[1] // -> там будет userAddress
+		// }
+
+		console.log("userResult = ", userResult );
+
+		/// деструктуризация
+		const user6 = {
+			name: "Татьяныч",
+			age: 100500,
+			phone: "555-12-12",
+			address:'г.Москва, ул Новослободская '
+		}
+
+		const phone = "999-66-55";
+
+		const { name, age, phone: user6Phone, address = "БОМЖ"} = user6;
+
+		console.log("Destructure user6 = ", name, age, phone, `real phone ${user6Phone}, `, address );
+
+		var x, {x: y = 1} = { x };
+
+		console.log("Y = ", y);
+
+		const ms2 = ["Аня", "25 лет", "живет за Уралом"];
+		//      			0				1					2									3 - элементы массива
+
+		const [usrName, usrAge, usrAddress, usrPhone = 77788855] = ms2;
+		// const [usrName, usrAge, , usrPhone = 77788855] = ms2; // это как можно проигнорировать неинтересующее элемент массива, просто написать 1 лишнюю запятую
+		console.log("Destructure array user = ", usrName, usrAge, usrAddress, usrPhone );
+
+
+		const fieldName1 = "age";
+		const fieldName2 = "phone";
+
+		const user7 = {
+			fName: "Антонио",
+			sName: "Феррари",
+			[fieldName1]: 50, // -> age: 50,
+			[fieldName2]: 5558978, // -> phone: 5558978,
+			["gender"]: "Male",
+			car: {
+				brand: "Ferrary",
+				model: "Spider",
+			}
+		};
+
+		console.log("USER 7: способ 1 > ", user7.fName, user7.age)
+		console.log("USER 7: способ 2 > ", user7["fName"], user7["age"]);
+		console.log("USER 7: способ 3 > ", user7[ fieldName1 ], user7[ fieldName2 ]);
+
+		 // FOR ... OF ...
+		for(const v of ms2) {
+			console.log("For-of: ", v);
+		}
+
+		for(const v in ms2) {
+			console.log("For-in: ", v);
+		}
+
+		const promise = new Promise(async (resolve, reject) => {
+
+			const movies = await fetch(`https://api.tvmaze.com/search/shows?q=batman`);
+
+			const data = await movies.json();
+
+			if (!data) {
+				resolve(data);
+			} else {
+				reject("Fatal ERROR!!!!");
+			}
+		});
+
+		promise
+			.then((val) => {
+				console.log("Успех, промис разразился и сработал колбэк resolve", val)})
+			.then(() => {
+				console.log("Второй then")})
+			.catch((err) => {
+				console.log("Облом, промис разразился и сработал колбэк reject (ERROR)", err);
+			})
+			.then(() => {
+				console.log("Then после Catch ")});
+
+
+		const userName2 = "Мария";
+		console.log("userName2 replica = ", userName2, "ха ".repeat(3));
+
+		// методы функции обертки Object
+
+		const ob1 = { user: "Васек" };
+		const ob2 = ob1;// { user: "Васек" };
+
+		console.log("является ли ob1 тем же самым, что и ob2 ", Object.is(ob1, ob2)); // == или ===
+		console.log("является ли ob1 тем же самым, что и ob2 (==) ", ob1 == ob2);
+
+		const user8 = Object.assign({}, user7, user6); // склеивание объектов, которые переданы через ЗПТ
+
+		console.log("Object.assign result:: ", user8, user8.car == user7.car)
+
+		// Object.setPrototypeOf(child, parent)
+
+		// СПРЕД и РЕСТ оператор
+
+		const userInfo10 = (fName, lName, ...rest) => {
+
+			console.log("Основные параметры функции:: ", fName, lName,) // -> rest[0], rest[1], rest[2]....
+			console.log("Остальные параметры функции:: ", ...rest) // -> rest[0], rest[1], rest[2]....
+		};
+
+		userInfo10("Larry", "Barry", "Grey", 55, "555-123-123");
+
+		console.log("Раскладываем ob1", { ...ob1 } );
+
+		// { ...ob1 }  эквивалентно копированию Object.assign({}, ob1)
+		// const ms3 = [ ...ms2 ] эквивалентно const ms3 = ms2.slice()
+
+		/////// SET и MAP
+
+		const map = new Map();
+
+		map.set("userName", "Marry");
+		map.set(1, "5555");
+		map.set(true, "tlksdkfj jh ");
+		map.set(ob2, "ob2----");
+		map.set("userName", "Маша");
+
+		console.log("Map:: ", map.get("userName"), map.get(ob2))
+
+		for(let val of map.values()) {
+			console.log("Map for of:: ", val);
+		}
+
+		const someSet = new Set();
+
+		someSet.add("Петр Петрович");
+		someSet.add("родился в январе");
+		someSet.add("в городе Москве");
+		someSet.add(ob2);
+
+		for(let val of someSet) {
+			console.log("Set for of:: ", val);
+		}
+
+		// функции генераторы
+
+		function * superGenerator() {
+			const a = 5;
+			const b = 10;
+			yield "Первое значение из возврата " + (a + b);
+			const c = (a + b + 100) / 3;
+			yield "Я номер 2 : " + c;
+
+			yield "Ну а я буду ПРЕДпоследним";
+			const f = 1000 * c;
+			return "Finale " + f;
+		}
+
+		const genResult = superGenerator();
+
+		console.log("Generator 1 :: ", genResult.next());
+		console.log("Generator 2 :: ", genResult.next());
+		console.log("Generator 3 :: ", genResult.next());
+		console.log("Generator 4 :: ", genResult.next());
+		console.log("Generator 5 :: ", genResult.next());
+
+		// Array.prototype.includes
+
+		if(![1,2,3,4,5].indexOf(7)) {
+		  console.log("indexOf(7) = not found")
+		}
+    console.log("indexOf(7) res = ", [1,2,3,4,5].indexOf(1));
+
+    if(![1,2,3,4,5].includes(7)) {
+      console.log("includes(7) = not found")
+    }
+		// **
+
+    console.log("Степень 2**3 = ", 2**3);
+    console.log("Степень Math.pow(2, 4) = ", Math.pow(2, 4));
+
+    // Object values
+    console.log("Object values: ", Object.values(user7));
+
+    // Object entries
+    console.log("Object entries: ", Object.entries(user7));
+
+    // Trailing coma
+    const someFunction = (
+      name,
+			age,
+			phone, // дело в этой запятой, раньше она считалась лишней, т.к. была последней и после нее ничего не было, в ES2017 так норм писать
+		) => {
+      console.log("Trailing coma", name, age, phone)
+		}
+
+		const user9 = {
+      name,
+      age,
+      phone, // дело в этой запятой, раньше она считалась лишней, т.к. была последней и после нее ничего не было, в ES2017 так норм писать
+		}
+
+		/// ASYNC / AWAIT FUNCIONS
+		// async - говорим интерпритатору, что объявляем асинхронную функцию
+		// await - указать интерпритатору, то место внутри async-функции, где необходимо подождать (т.е. то, ради чего функция выкидывается из основного потока)
+
+		const getMooviesList = async () => { // если у нас стрелочкая async-функция
+
+      // const response = fetch(`https://api.tvmaze.com/search/shows?q=batman`);
+
+      // если делать через промис
+      // const data = response.then((localData) => {console.log("Данные по фильмам", localData)} );
+
+      try {
+        const response = await fetch(`https://api99.tvmaze.com/search/shows?q=batman`);
+        const data = await response.json();
+      } catch (e) {
+        console.log("Не смог получить данные::: ", e);
+      }
+
+      console.log("Данные по фильмам", data);
+
+      // response
+			// .then((response) => {
+			//	 return response
+			// })
+			// .then((val) => {
+      //   const data = response;
+      //   console.log("Данные по фильмам", data);
+			//
+			// })
+		}
+
+		async function getMooviesList2 () { // если у нас функция объявляется через ключевое слово function
+
+		}
+
+    getMooviesList();
+
+    // Promise.finally
+    fetch('file.json')
+      .then(data => data.json())
+      .catch(error => console.error(error))
+      .finally(() => console.log('finished')) // новый метод у промиса
+
+		const bbb = [1,2,3, [5,6,7], 8, [9, [10, [11, 12]]]] // => [1,2,3,4,5,6,7,8,9,10, 11]
+		console.log("Сделать массив плоским", bbb.flat());
+
+    // flatArray.prototype = {} // изначально это пустой объект созданный специально под функцию
+
+    Array.prototype.flatArray = function() {
+      // this
+      let result = [];
+      const len = this.length;
+
+      for(let i = 0; i < len; i++) {
+        if (Array.isArray(this[ i ])) {
+          result = result.concat(this[ i ].flatArray());
+        } else {
+          result.push(this[ i ]);
+        }
+      }
+      return result;
+    };
+
+
+    console.log("Уплощенеи массива : ", bbb.flatArray());
+    console.log("Уплощенеи массива #2 : ", [1,2,3, [5,6,7], 8, [9, [10, [11, 12]]]].flatArray());
+
+    const str1 = "ха"; // встроенный метод, который принимает на вход N (number) и далее дублирует искомую строку N раз
+		console.log(str1.dubb(4)); // -> "хахахаха"
+
 	</script>
 
 </body>

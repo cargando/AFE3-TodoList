@@ -1,8 +1,22 @@
+
+window.echo = function () {
+  console.log.apply(this, arguments);
+};
+
+
 const FORM_CREATE = 'FORM_CREATE';
 const FORM_EDIT = 'FORM_EDIT';
 const TASK_ST_NEW = "0";
 const TASK_ST_INPROGRESS = "1";
 const TASK_ST_DONE = "2";
+const DTIME_FORMAT = 'DD-MM-YYYY HH:mm';
+const DATE_FORMAT = 'DD-MM-YYYY';
+var DANGER = 'danger';
+var TASK_TODO = "todo";
+var TASK_INPROGRESS = "inprogress";
+var TASK_DONE = "done";
+var SELECT_INDEX = [TASK_TODO, TASK_INPROGRESS, TASK_DONE]
+
 
 
 
@@ -13,10 +27,19 @@ const STATE = {
 	formState: FORM_CREATE,
 	formData: {},
 	operateIndex: null, // индекс задачи в массиве taskList, над которым производится действие в данный момент времени
+  calendarVisibility: false, // каледарь отображен/скрыт
+  calendarDate: null, // дата, которую отображает календарь - хранит данные в формате new Date()
+  dnd: {
+    from: null,
+    to: null,
+    id: null,
+  },
 };
 
 
 document.addEventListener('DOMContentLoaded', handleContentLoad);
+
+
 
 function createOneTask(data) {
 	const { taskList } = STATE;
@@ -35,7 +58,13 @@ function updateLocalStorage(data) {
 }
 
 function loadDataFromStorage() {
-	const taskList = JSON.parse(localStorage.getItem('taskList'));
+	let taskList = [];
+	try {
+    taskList = JSON.parse(localStorage.getItem('taskList'));
+  } catch (e) {
+    echo("Error:: cannot get list of tasks from LocalStorage");
+  }
+
 	STATE.taskList = taskList;
 	// STATE = { ...STATE, taskList }; - так работало бы, если бы STATE был объявлен через let
 
@@ -148,12 +177,19 @@ function handleCancelBtnClick(e) {
 //////////////////////////////////////////////// ON LOAD INITIAL THINGS
 function handleContentLoad(e) {
 
+  STATE.calendarDate = new Date();
+
 	resetFormControls();
 	loadDataFromStorage();
 	renderTaskList();
 	fixBootstrapModal();
+  initCalendar();
+  renderDnnColums();
+  initDnD();
 
-	document.getElementById('taskDate').value = dayjs().format('DD-MM-YYYY HH:mm');
+
+
+	document.getElementById('taskDate').value = dayjs(STATE.calendarDate).format(DTIME_FORMAT);
 
 	document
 		.getElementById('createTaskBtn')
@@ -163,9 +199,18 @@ function handleContentLoad(e) {
 		.getElementById('cancelTaskBtn')
 		.addEventListener('click', handleCancelBtnClick);
 
+	document
+    .getElementById('calendarBtn')
+    .addEventListener('click', handleCalendarClick);
+
+	document
+    .getElementById('navigation')
+    .addEventListener('click', handleTabClick);
+
 	document.getElementById('modalBoxCloseBtn').addEventListener('click', handleCloseModal);
 	document.getElementById('modalBoxCloseBtnX').addEventListener('click', handleCloseModal);
 	document.getElementById('modalBoxSaveBtn').addEventListener('click', handleModalActionClick);
+
 
 }
 
@@ -217,6 +262,10 @@ function renderHelpers() {
 	const taskState = document.getElementById('taskState'); // .parentElement.getElementsByTagName('small')[0];
 
 	function paintHelper(item, err) {
+
+	  if(!item.parentElement.getElementsByTagName('small')[0]) {
+	    return ;
+    }
 
 		if (err) {
 			item.classList.add('is-invalid');
@@ -312,3 +361,37 @@ function renderTaskList() {
 		tasksList.appendChild(renderOneTaskFromList(item, index));
 	});
 }
+
+////////////
+
+function handleTabClick(e) {
+
+  const id = e.target.getAttribute("data-id");
+
+  const links = document.querySelectorAll('a[data-id]');
+  const tabContent = document.querySelectorAll('div[data-tab]');
+
+
+  for(let i = 0; i < links.length; i++) {
+    const item = links[i];
+    const itemAttr = item.getAttribute("data-id")
+
+    console.log("href=", i, tabContent[i].style)
+
+    item.classList.remove('active');
+    tabContent[i].style.display = "none";
+
+
+
+    if ( itemAttr == id) {
+      item.classList.add('active');
+      tabContent[i].style.display = "flex";
+    }
+
+  }
+
+  echo("Клик по табу", links);
+
+}
+
+

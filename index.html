@@ -9,6 +9,10 @@
 			crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+	<link rel="stylesheet" href="/css/calendar.css">
+
+	<script src="/js/dnd.js"></script>
+	<script src="/js/calendar.js"></script>
 	<script src="/js/main.js"></script>
 	<script src="https://unpkg.com/dayjs@1.8.23/dayjs.min.js"></script>
 </head>
@@ -20,8 +24,21 @@
 				<h1>TODO List</h1>
 			</div> <!--  end of col -->
 		</div> <!-- end of row -->
-		<!-- -->
 		<div class="row">
+			<div class="col">
+				<ul id="navigation" class="nav nav-tabs">
+					<li class="nav-item">
+						<a data-id="1" class="nav-link active" href="#">Форма</a>
+					</li>
+					<li class="nav-item">
+						<a data-id="2" class="nav-link" href="#">DnD</a>
+					</li>
+				</ul>
+				<br >&nbsp;
+			</div>
+		</div>
+		<!-- -->
+		<div data-tab="1" class="row">
 			<div class="col">
 				<div class="card">
 					<div class="card-body">
@@ -33,10 +50,18 @@
 								<small class="form-text text-muted">We'll never share your email with anyone else.</small>
 							</div>
 
-							<div class="form-group">
-								<label for="taskDate">Когда напомнить</label>
+<!--							<div class="form-group mb-2">-->
+<!--								<div class="input-group-prepend">-->
+<!--									<div class="input-group-text">@</div>-->
+<!--								</div>-->
+<!--								<input type="text" class="form-control" id="taskDate" placeholder="Введите дату">-->
+<!--								<small class="form-text text-muted">&nbsp;</small>-->
+							<div class="input-group mb-2">
+								<label class="sr-only" for="taskDate">Когда напомнить</label>
+								<div class="input-group-prepend">
+									<div id="calendarBtn" class="input-group-text"><i class="fas fa-calendar"></i></div>
+								</div>
 								<input type="text" class="form-control" id="taskDate" placeholder="Введите дату">
-								<small class="form-text text-muted">&nbsp;</small>
 							</div>
 
 							<div class="form-group">
@@ -78,6 +103,49 @@
 				</div> <!-- end of card -->
 			</div> <!-- end of col -->
 		</div> <!-- end of row -->
+		<!-- КОНТЕНТ ДЛЯ Drag And Drop -->
+		<div data-tab="2" class="row" style="display: none">
+
+			<div class="col-sm-4"> <!-- TODO Card -->
+				<div id="todoListCard" class="card">
+					<div class="card-body card-body-dnd">
+						<h3>Todo</h3>
+						<hr color="blue">
+						<ul id="todoList" class="list-group">
+
+						</ul> <!-- END of list-group -->
+
+					</div>
+				</div>
+			</div> <!-- END TODO Card -->
+
+			<div class="col-sm-4"> <!-- InProgress Card -->
+				<div id="inprogressListCard" class="card">
+					<div class="card-body card-body-dnd">
+						<h3>In progress</h3>
+						<hr color="orange">
+						<ul id="inprogressList" class="list-group">
+
+						</ul> <!-- END of list-group -->
+
+					</div>
+				</div>
+			</div> <!-- END InProgress Card -->
+
+			<div class="col-sm-4"> <!-- DONE Card -->
+				<div id="doneListCard" class="card">
+					<div class="card-body card-body-dnd">
+						<h3>Done</h3>
+						<hr color="green">
+						<ul id="doneList" class="list-group">
+
+						</ul> <!-- END of list-group -->
+
+					</div>
+				</div>
+			</div> <!-- END DONE Card -->
+
+		</div>
 	</div> <!-- end of container -->
 
 
@@ -102,6 +170,40 @@
 			</div>
 		</div>
 	</div>
+
+	<div id="calendar" class="micalendar" style="display:none">
+		<div class="header_wrap">
+			<div class="header">
+				<p id="monthHeader">Month name</p>
+			</div>
+			<div class="arrows">
+				<div id="prevButton" class="arrows_left">
+					<i class="fa fa-angle-left"></i>
+				</div>
+				<div id="nextButton" class="arrows_right"><i class="fa fa-angle-right"></i></div>
+			</div> <!-- END OF arrows -->
+		</div>
+		<table id="calendar_table">
+			<thead>
+			<tr>
+				<th>Пн</th>
+				<th>Вт</th>
+				<th>Ср</th>
+				<th>Чт</th>
+				<th>Пт</th>
+				<th>Сб</th>
+				<th>Вс</th>
+			</tr>
+			</thead>
+			<tbody>
+
+			</tbody>
+		</table>
+		<hr><div class="btn-group">
+		<input type="button" onclick="handleCloseCalendar(event)" value="Отмена" class="btn btn-sm btn-outline-secondary">
+	</div>
+	</div> <!-- END OF CALENDAR -->
+
 
 </body>
 </html>
